@@ -3,27 +3,22 @@
 clear
 echo -e "\e[1;36m=========== Trhacknon - Obfuscateur Interactif ===========\e[0m"
 
-# Dépendances
 command -v fzf >/dev/null || { echo >&2 "fzf est requis. Installe avec : sudo apt install fzf"; exit 1; }
 command -v pyarmor >/dev/null || echo -e "\e[1;31m[!] PyArmor non détecté. Installe avec : pip install pyarmor\e[0m"
 command -v nuitka >/dev/null || echo -e "\e[1;33m[!] Nuitka non détecté. Installe avec : pip install nuitka\e[0m"
 
-# Sélection du script avec fzf
 _t=$(find . -type f -name "*.py" | fzf --prompt="Sélectionne ton script Python : ")
 [[ -z "$_t" ]] && { echo "Aucun fichier sélectionné."; exit 1; }
 echo -e "\n\e[1;33mScript sélectionné : $_t\e[0m"
 
-# Nom de sortie pour le dossier et l'archive
 read -p "Nom de sortie personnalisé pour le dossier (laisser vide pour auto) : " _n
 _b=$(basename "$_t" .py)
 _o=${_n:-$_b}
 
-# Choix méthode
 _m=$(printf "pyarmor\npyc (bytecode)\nnuitka (binaire natif)\npyarmor + nuitka" | fzf --prompt="Choisis la méthode d'obfuscation : ")
 _a=$(printf "tar.gz\nzip\naucun" | fzf --prompt="Format d'archive de sortie : ")
 _e=$(printf "aucun\nzip (mot de passe)\ngpg (clé ou mot de passe)" | fzf --prompt="Souhaites-tu chiffrer l'archive ? ")
 
-# === Fonction pour générer le fichier USE.md ===
 _f() {
   cat <<EOL > "$_o/USE.md"
 # Utilisation du projet obfusqué
@@ -100,7 +95,6 @@ _g() {
       ;;
   esac
 
-  # Générer le fichier USE.md pour l'archive
   _f
 }
 
@@ -117,7 +111,6 @@ case "$_m" in
 
     mkdir -p "$_o"
 
-    # PyArmor 9+: bonne commande
     pyarmor gen "$_t" --output "$_o" $_ex_arg
 
     _g
