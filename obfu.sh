@@ -1,7 +1,7 @@
 #!/bin/bash
 
 clear
-echo -e "\e[1;36m=========== Obfuscateur Python Interactif - By Trhacknon ===========\e[0m"
+echo -e "\e[1;36m=========== Obfuscateur Python Interactif - trhacknon ===========\e[0m"
 
 # Dépendances
 command -v fzf >/dev/null || { echo >&2 "fzf est requis. Installe avec : sudo apt install fzf"; exit 1; }
@@ -144,9 +144,9 @@ case "$method" in
     mkdir "$tmpdir"
     cp "$target" "$tmpdir/"
     cd "$tmpdir" || exit 1
-    pyarmor gen --restrict 1 -O obf "$(basename "$target")"
+    pyarmor gen --output obf "$(basename "$target")"
     cd obf || exit 1
-    nuitka --standalone --lto --follow-imports "$(basename "$target")" --output-dir="../../$output_name"
+    nuitka --standalone --lto="auto" --follow-imports "$(basename "$target")" --output-dir="../../$output_name"
     cd ../../
     rm -rf "$tmpdir"
     archive_result
